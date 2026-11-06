@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thiệp mời cưới</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+  html, body { margin: 0; height: 100%; }
+  #app { min-height: 100%; }
+  .err { font-family: system-ui, sans-serif; text-align: center; padding: 80px 20px; color: #555; }
+  .fade { animation: fade .9s ease both; }
+  @keyframes fade { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="config.js?v=1"></script>
+<script src="card.js?v=5"></script>
+<script>
+(async () => {
+  const app = document.getElementById('app');
+  const hash = location.hash.slice(1);
+  try {
+    if (!hash) throw new Error('empty');
+    const data = await WeddingCard.decode(hash);
+    const { e } = WeddingCard.render(app, { event: data.e, design: data.d, guest: data.g });
+    app.classList.add('fade');
+    document.title = `Thiệp mời cưới · ${e.groom} & ${e.bride}`;
+  } catch (err) {
+    app.innerHTML = '<div class="err"><h2>Không mở được thiệp mời</h2><p>Đường link có thể bị thiếu hoặc sai. Vui lòng liên hệ người gửi để nhận lại link.</p></div>';
+  }
+})();
+</script>
+</body>
+</html>

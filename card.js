@@ -1,5 +1,8 @@
 /* Bộ dựng thiệp cưới dùng chung cho trang quản trị và trang thiệp của khách */
 (function () {
+  // Ảnh luôn lấy theo vị trí của card.js (để trang quản trị trên Google cũng hiện được ảnh)
+  const BASE = (document.currentScript && document.currentScript.src) || location.href;
+  const img = (p) => new URL(p, BASE).href;
   const FONTS = [
     { name: 'Great Vibes', cat: 'cursive', q: 'Great+Vibes' },
     { name: 'Dancing Script', cat: 'cursive', q: 'Dancing+Script:wght@400;700' },
@@ -125,7 +128,7 @@
 
   function patternCss(d) {
     const c = d.accent;
-    if (d.bgImage && d.bgMode === 'page') return `${veil(d.bg, d.bgOpacity)}, url("${d.bgImage}") center/cover no-repeat fixed, ${d.bg}`;
+    if (d.bgImage && d.bgMode === 'page') return `${veil(d.bg, d.bgOpacity)}, url("${img(d.bgImage)}") center/cover no-repeat fixed, ${d.bg}`;
     switch (d.pattern) {
       case 'dots': return `radial-gradient(${c}55 1.5px, transparent 2px) 0 0/22px 22px, ${d.bg}`;
       case 'grid': return `linear-gradient(${c}33 1px, transparent 1px) 0 0/28px 28px, linear-gradient(90deg, ${c}33 1px, transparent 1px) 0 0/28px 28px, ${d.bg}`;
@@ -323,9 +326,9 @@
 
     el.innerHTML = `
     <div class="wc" data-align="${d.align}" style="${esc(vars)};background:${esc(patternCss(d))}">
-      <div class="wc-card wc-b-${d.border}"${d.bgImage && d.bgMode === 'card' ? ` style="background:${esc(`${veil(d.cardBg, d.bgOpacity)}, url("${d.bgImage}") center/cover no-repeat, ${d.cardBg}`)}"` : ''}>
+      <div class="wc-card wc-b-${d.border}"${d.bgImage && d.bgMode === 'card' ? ` style="background:${esc(`${veil(d.cardBg, d.bgOpacity)}, url("${img(d.bgImage)}") center/cover no-repeat, ${d.cardBg}`)}"` : ''}>
         ${d.border === 'corners' ? '<i class="wc-corner tl"></i><i class="wc-corner tr"></i><i class="wc-corner bl"></i><i class="wc-corner br"></i>' : ''}
-        ${d.bgImage && d.bgMode === 'top' ? `<div class="wc-hero" style="background-image:url(&quot;${esc(d.bgImage)}&quot;)"></div>` : ''}
+        ${d.bgImage && d.bgMode === 'top' ? `<div class="wc-hero" style="background-image:url(&quot;${esc(img(d.bgImage))}&quot;)"></div>` : ''}
         ${ornHtml}
         ${photo ? `<img class="wc-photo" src="${esc(photo)}" alt="">` : ''}
         <p class="wc-intro">${esc(e.intro)}</p>

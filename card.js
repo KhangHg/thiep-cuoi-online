@@ -34,6 +34,9 @@
     venue: 'Trung tâm Hội nghị Tiệc cưới Hoa Sen',
     address: '123 Đường Hoa Sữa, Quận 1, TP. Hồ Chí Minh',
     mapUrl: '',
+    brideVenue: '',
+    brideAddress: '',
+    brideMapUrl: '',
     photoUrl: '',
     message: 'Sự hiện diện của quý khách là niềm vinh hạnh cho gia đình chúng tôi!',
     phone: '',
@@ -175,6 +178,7 @@
   .wc-lunar{font-style:italic;font-size:.88em;opacity:.8;margin:4px 0 0}
   .wc-venue{margin-top:6px}
   .wc-venue strong{font-family:var(--f-head);color:var(--primary);font-size:1.1em;display:block}
+  .wc-party{margin:0 0 4px;text-transform:uppercase;letter-spacing:2px;font-size:.78em;opacity:.8}
   .wc-btn{display:inline-block;margin:10px 6px 0 0;padding:8px 18px;border-radius:999px;border:1px solid var(--primary);color:var(--primary);text-decoration:none;font-family:var(--f-head);font-size:.85em;letter-spacing:1px;background:transparent;cursor:pointer}
   .wc-btn.fill{background:var(--primary);color:var(--card)}
   .wc-msg{font-style:italic;margin:0}
@@ -312,7 +316,12 @@
     const orn = ORN[d.ornament];
     const ornHtml = d.ornament === 'none' ? '' : d.ornament === 'line' ? '<div class="wc-div"></div>' : `<div class="wc-orn ${d.ornament}">${orn}</div>`;
     const divider = `<div class="wc-div">${DIV[d.ornament] || ''}</div>`;
-    const map = url(e.mapUrl) || (e.address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.venue + ' ' + e.address)}` : '');
+    // Khách nhà gái xem địa điểm tiệc nhà gái (nếu đã nhập), còn lại xem địa điểm tiệc nhà trai
+    const brideSide = !!(guest && guest.side === 'Nhà gái' && (e.brideVenue || e.brideAddress));
+    const twoParties = !!(e.brideVenue || e.brideAddress);
+    const venue = brideSide ? e.brideVenue : e.venue;
+    const address = brideSide ? e.brideAddress : e.address;
+    const map = url(brideSide ? e.brideMapUrl : e.mapUrl) || (address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(venue + ' ' + address)}` : '');
     const photo = url(e.photoUrl);
     const phone = (e.phone || '').replace(/[^\d+]/g, '');
     const smsBody = encodeURIComponent(`${guestName}: xác nhận sẽ tham dự đám cưới ${e.groom} & ${e.bride}.`);
@@ -351,8 +360,9 @@
         ${e.lunar ? `<p class="wc-lunar">${esc(e.lunar)}</p>` : ''}
         ${divider}
         <div class="wc-venue">
-          <strong>${esc(e.venue)}</strong>
-          <span>${nl2br(e.address)}</span><br>
+          ${twoParties ? `<p class="wc-party">${brideSide ? 'Tiệc cưới nhà gái' : 'Tiệc cưới nhà trai'}</p>` : ''}
+          <strong>${esc(venue)}</strong>
+          <span>${nl2br(address)}</span><br>
           ${map ? `<a class="wc-btn" href="${esc(map)}" target="_blank" rel="noopener">📍 Xem bản đồ</a>` : ''}
         </div>
         ${d.showCountdown && dt ? '<div class="wc-cd" data-cd></div>' : ''}
